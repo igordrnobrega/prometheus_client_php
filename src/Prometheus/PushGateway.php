@@ -59,7 +59,7 @@ class PushGateway
      */
     public function push(CollectorRegistry $collectorRegistry, string $job, array $groupingKey = []): void
     {
-        $this->doRequest($collectorRegistry, $job, $groupingKey, 'put');
+        $this->doRequest($collectorRegistry, $job, 'put', $groupingKey);
     }
 
     /**
@@ -72,7 +72,7 @@ class PushGateway
      */
     public function pushAdd(CollectorRegistry $collectorRegistry, string $job, array $groupingKey = []): void
     {
-        $this->doRequest($collectorRegistry, $job, $groupingKey, 'post');
+        $this->doRequest($collectorRegistry, $job, 'post', $groupingKey);
     }
 
     /**
@@ -84,7 +84,7 @@ class PushGateway
      */
     public function delete(string $job, array $groupingKey = []): void
     {
-        $this->doRequest(null, $job, $groupingKey, 'delete');
+        $this->doRequest(null, $job, 'delete', $groupingKey);
     }
 
     /**
@@ -94,7 +94,7 @@ class PushGateway
      * @param string $method
      * @throws GuzzleException
      */
-    private function doRequest(CollectorRegistry $collectorRegistry, string $job, array $groupingKey, $method): void
+    private function doRequest(CollectorRegistry $collectorRegistry, string $job, $method, array $groupingKey = null): void
     {
         $url = \sprintf(
             "%s://%s/metrics/job/%s",
