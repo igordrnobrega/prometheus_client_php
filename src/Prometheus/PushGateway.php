@@ -43,7 +43,7 @@ class PushGateway
         $this->client = $client ?? new Client();
 
         if (!in_array($transport, self::ALLOWED_TRANSPORT_METHODS)) {
-            throw new \InvalidArgumentException();
+            throw new \InvalidArgumentException(\sprintf('Invalid transport "%s"', $transport));
         }
 
         $this->transport = $transport;
