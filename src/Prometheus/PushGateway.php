@@ -10,10 +10,20 @@ use RuntimeException;
 
 class PushGateway
 {
+    const ALLOWED_TRANSPORT_METHODS = [
+        'http',
+        'https',
+    ];
+
     /**
      * @var string
      */
     private $address;
+
+    /**
+     * @var string
+     */
+    private $transport;
 
     /**
      * @var ClientInterface
@@ -22,13 +32,21 @@ class PushGateway
 
     /**
      * PushGateway constructor.
+     * @param $address string host:port of the push gateway
+     * @param $transport string transport method of the push gateway
      * @param string $address host:port of the push gateway
      * @param ClientInterface $client
      */
-    public function __construct($address, ClientInterface $client = null)
+    public function __construct($address, ClientInterface $client = null, $transport = 'http')
     {
         $this->address = $address;
         $this->client = $client ?? new Client();
+
+        if (!in_array($transport, self::ALLOWED_TRANSPORT_METHODS)) {
+            throw new \InvalidArgumentException();
+        }
+
+        $this->transport = $transport;
     }
 
     /**
@@ -78,7 +96,13 @@ class PushGateway
      */
     private function doRequest(CollectorRegistry $collectorRegistry, string $job, array $groupingKey, $method): void
     {
-        $url = "http://" . $this->address . "/metrics/job/" . $job;
+        $url = \sprintf(
+            "%s://%s/metrics/job/%s",
+            $this->transport,
+            $this->address,
+            $job
+        );
+
         if (!empty($groupingKey)) {
             foreach ($groupingKey as $label => $value) {
                 $url .= "/" . $label . "/" . $value;
