@@ -28,7 +28,7 @@ class BlackBoxPushGatewayTest extends TestCase
         $counter = $registry->registerCounter('test', 'some_counter', 'it increases', ['type']);
         $counter->incBy(6, ['blue']);
 
-        $pushGateway = new PushGateway('pushgateway:9091', $transport);
+        $pushGateway = new PushGateway('pushgateway:9091', null, $transport);
         $pushGateway->push($registry, 'my_job', ['instance' => 'foo']);
 
         $client = new Client();
